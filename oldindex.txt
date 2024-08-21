@@ -1,0 +1,35 @@
+<?php
+error_reporting(0);
+date_default_timezone_set('Europe/London');
+
+$v_ip = $_SERVER['REMOTE_ADDR'];
+$getip = 'http://ip-api.com/json/' . $v_ip;
+$curl = curl_init();
+curl_setopt($curl, CURLOPT_URL, $getip);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+$content = curl_exec($curl);
+curl_close($curl);
+$details = json_decode($content);
+if(!empty($details->country)) {
+$v_country = $details->country;
+} else {
+	$v_country = "UnKnown";
+}
+$v_isp = gethostbyaddr($v_ip);
+$v_date = date("l d F H:i:s");
+$v_agent = $_SERVER['HTTP_USER_AGENT'];
+$v_referrer = $_SERVER['HTTP_REFERER'];
+$ips = array(	$_SERVER['REMOTE_ADDR'], );
+
+ $fp = fopen("ip0.txt", "a");
+        fputs($fp, "IP: $v_ip - ISP: $v_isp - COUNTRY: $v_country - REFERER: $v_referrer - DATE: $v_date - BROWSER: $v_agent\r\n");
+        fclose($fp);
+
+
+header("Location: index0.html");
+
+
+
+
+?>
